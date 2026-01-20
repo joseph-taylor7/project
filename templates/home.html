@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     <link rel="shortcut icon" href="{{url_for('static', filename='home.png')}}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     {% if login or admin_login %}
     <link rel="shortcut icon" href="{{url_for('static', filename='login.png')}}" type="image/x-icon">
     <title>Login</title>
@@ -178,7 +179,7 @@
                 </div>
                 {% else%}
                 <div class="circle" id="circle">
-                    <img src="{{url_for('static', filename='menu.png')}}" alt="" srcset="">
+                    <i class="fas fa-bars"></i>
                 </div>
                 {% endif %}
             </div>
