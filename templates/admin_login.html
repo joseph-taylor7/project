@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="shortcut icon" href="{{url_for('static', filename='login.png')}}" type="image/x-icon">
+    <title>Admin login</title>
+</head>
+
+<body>
+    {% with messages=get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash {{category}}"> {{message}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    
+</body>
+
+</html>

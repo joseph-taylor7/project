@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="shortcut icon" href="{{url_for('static', filename='admin_panel.png')}}" type="image/x-icon"
+        style="background-color: aliceblue;">
+    <title>Admin's Control Panel</title>
+</head>
+
+{% with messages=get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-container">
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+
+<body id="admin_page">
+    <div class="tinydevice">Controls can't be displayed on small devices</div>
+
+    <section class="admin_panel">
+        <section class="admin_header">
+            <h1>Admin's Control Panel</h1>
+            <div class="nav">
+                <div class="profile">
+                    {% if logged_in %}
+                    <div class="circle" id="circle" style="background-color: rgb(0,0,0,0.6); border: 1px solid yellow;">
+                        <p>{{letter}}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="box" id="box">
+                    
+                    <div class="boxHead">
+                        <div class="userName">
+                            {{role}} {{lname}}
+                        </div>
+                        <div class="close" id="close_box">X</div>
+                    </div>
+                    <div class="boxLink">
+                        <div class="linkCategory">
+                            <ul>
+                                <li><a href="{{url_for('home')}}">Home</a></li>
+                        
+                            </ul>
+                        </div>
+                        <div class="linkCategory">
+                            <ul>
+                                <li><a href="{{url_for('signup')}}">Add User</a></li>
+                                <li><a href="{{url_for('add_product')}}">Add Product</a></li>
+                                <li><a href="{{url_for('add_type')}}">Add Product Type</a></li>
+                        
+                            </ul>
+                        </div>
+                        <div class="linkCategory">
+                            <ul>
+                                <li><a href="{{url_for('admin')}}">Create Table</a></li>
+                        
+                            </ul>
+                        </div>
+                        <div class="linkCategory">
+                            <ul>
+                                <li><a href="{{url_for('get_users')}}">Display Users</a></li>
+                                <li><a href="{{url_for('get_messages')}}">Display Messages</a></li>
+                                <li> <a href="{{url_for('get_products')}}">Display Products</a></li>
+                                <li><a href="{{url_for('get_type')}}">Display Poduct Type</a></li>
+                        
+                            </ul>
+                        </div>
+                        <div class="linkCategory">
+                            <ul>
+                                <li> <a href="{{url_for('admin')}}">Drop Table</a></li>
+                        
+                            </ul>
+                        </div>
+                        <div class="linkCategory">
+                            <ul>
+                                <li><a href="{{url_for('admin')}}">Update Table</a></li>
+                                <li><a href="{{url_for('update_product')}}">Update Product</a></li>
+                                <li><a href="{{url_for('update_product_type')}}">Update Product Type</a></li>
+                        
+                            </ul>
+                        </div>
+                        
+                        <div class="linkCategory">
+                            <ul>
+                                <li><a href="{{url_for('logout')}}">Logout</a>
+                            </ul>
+                        </div>
+                        </div>
+                        </div>
+    
+        </section>
+        <section class="control">
+            <div class="box" id="search_user">
+                <h1>View Specific User</h1>
+                <form action="/admin/user" method="POST">
+                    <input type="search" name="email" placeholder="Type User Email..." required>
+                    <button>Get User</button>
+                </form>
+            </div>
+            <div class="box" id="view_order">
+                <h1>View Specific Order</h1>
+                <form action="/view_order" method="post">
+                    <input type="search" name="view_order" required>
+                    <input type="hidden" name="hidden">
+                    <button>Get Order</button>
+                </form>
+            </div>
+            <div class="box" id="payements">
+                <h1>View Payment</h1>
+                <form action="/view_payment" method="post">
+                    <input type="search" name="view_payment" required>
+                    <button>Get Payment</button>
+                </form>
+            </div>
+            <div class="box" id="all_users">
+                <h1>Display Users</h1>
+                <form action="/admin/display/users" method="post">
+                    <button>Display</button>
+                </form>
+            </div>
+            <div class="box" id="all_products">
+                <h1>Display Products</h1>
+                <form action="/admin/display/products" method="post">
+                    <button>Display</button>
+                </form>
+            </div>
+
+            <div class="box">
+                <h1>Remove User</h1>
+                <form action="/admin/remove/user" method="post">
+                    <input type="email" name="email" id="" required placeholder="Enter User Email...">
+                    <button>Remove</button>
+                </form>
+            </div>
+            <div class="box">
+                <h1>Grant Admin Access To A User</h1>
+                <form action="/admin/grant/admin/access" method="post">
+                    <input type="email" name="email" id="" required placeholder="Enter User Email...">
+                    <button>Grant</button>
+                </form>
+            </div>
+            <div class="box">
+                <h1>Revoke Admin Access From A User</h1>
+                <form action="/admin/revoke/admin/access" method="post">
+                    <input type="email" name="email" id="" required placeholder="Enter User Email...">
+                    <button>Revoke</button>
+                </form>
+            </div>
+
+        </section>
+
+        {% if add_product %}
+        <section class="admin_form">
+            <h1>Product Details</h1>
+            <form action="/admin/add/product/detail" method="post">
+                <div class="field">
+                    <label for="productName">Product Type ID</label>
+                    <input type="number" name="typeId" required>
+
+                </div>
+                <div class="field">
+                    <label for="productName">Product Name</label>
+                    <input type="text" name="productName" required>
+
+                </div>
+                <div class="field">
+                    <label for="productDetail">Product Description</label>
+                    <input type="text" name="productDetail" required>
+
+                </div>
+                <div class="field">
+                    <label for="productPrice">Price Of Product</label>
+                    <input type="text" name="productPrice" required>
+
+                </div>
+
+                <div class="field">
+                    <label for="productImage">Product Image</label>
+                    <input type="text" name="productImage" required>
+                </div>
+                <div class="field">
+                    <button>Add</button>
+                </div>
+
+            </form>
+        </section>
+        {% endif %}
+
+        {% if add_type %}
+        <section class="admin_form">
+            <h1>New Type</h1>
+            <form action="/admin/add/product/type" method="post">
+                <div class="field">
+                    <label for="typeName">Name</label>
+                    <input type="text" name="typeName" required>
+                </div>
+                <div class="field">
+                    <button>Add</button>
+                </div>
+
+            </form>
+        </section>
+        {% endif %}
+
+        {% if update_type %}
+        <section class="admin_form">
+            <h1>New Type</h1>
+            <form action="/admin/update/product/type" method="post">
+
+                <div class="field">
+                    <label for="typeId">Type ID</label>
+                    <input type="number" name="typeId" required>
+                </div>
+                <div class="field">
+                    <label for="typeName">Name</label>
+                    <input type="text" name="typeName" required>
+                </div>
+                <div class="field">
+                    <button>Add</button>
+                </div>
+
+            </form>
+        </section>
+        {% endif %}
+
+        {% if update_product %}
+        <section class="admin_form">
+            <h1>Provide New Product Details</h1>
+            <form action="/admin/update/product/detail" method="post">
+
+                <div class="field">
+                    <label for="productName">Product ID</label>
+                    <input type="number" name="productId" required>
+
+                </div>
+                <div class="field">
+                    <label for="productName">New Product Type ID</label>
+                    <input type="number" name="typeId" required>
+
+                </div>
+                <div class="field">
+                    <label for="productName">New Product Name</label>
+                    <input type="text" name="productName" required>
+
+                </div>
+                <div class="field">
+                    <label for="productDetail">New Product Description</label>
+                    <input type="text" name="productDetail" required>
+
+                </div>
+                <div class="field">
+                    <label for="productPrice">New Price Of Product</label>
+                    <input type="text" name="productPrice" required>
+
+                </div>
+
+                <div class="field">
+                    <label for="productImage">New Product Image</label>
+                    <input type="text" name="productImage" required>
+                </div>
+                <div class="field">
+                    <button>Update</button>
+                </div>
+
+            </form>
+        </section>
+        {% endif %}
+
+        {% if found_user %}
+        <div class="admin_table">
+            <h1>{{view_user}}</h1>
+            <table border="1" cellpadding="10">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Created Date</th>
+                    <th>Created At</th>
+                </tr>
+                <tr>
+                    <td>{{ found_user.id }}</td>
+                    <td>{{ found_user.fname }} {{ found_user.lname }}</td>
+                    <td>{{ found_user.email }}</td>
+                    <td>{{ found_user.role }}</td>
+                    <td>{{ found_user['created_date'] }}</td>
+                    <td>{{ found_user['created_at'] }}</td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+
+
+        {% if users %}
+        <div class="admin_table">
+
+            <h1>{{view_user}}</h1>
+            <table border="1" cellpadding="10">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Created Date</th>
+                    <th>Created At</th>
+                </tr>
+
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.fname }} {{user.lname}}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.created_date }}</td>
+                    <td>{{ user.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+
+            {% if messages %}
+            <div class="admin_table">
+
+                <h1>{{view_message}}</h1>
+                <table border="1" cellpadding="10">
+                    <tr>
+                        <th>ID</th>
+                        <th>Sender Email</th>
+                        <th>Receiver Email</th>
+                        <th>Content</th>
+                        <th>Is Read</th>
+                        <th>Sent Date</th>
+                        <th>Sent At</th>
+
+                    </tr>
+
+                    {% for message in messages %}
+                    <tr>
+                        <td>{{ message.id }}</td>
+                        <td>{{ message.sender_email }}</td>
+                        <td>{{ message.receiver_email }}</td>
+                        <td>{{ message.content }}</td>
+                        <td>{{ message['is_read'] }}</td>
+                        <td>{{ message.sent_date }}</td>
+                        <td>{{ message.sent_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+
+                {% if products %}
+                <div class="admin_table">
+
+                    <h1>{{view_product}}</h1>
+                    <table border="1" cellpadding="10">
+                        <tr>
+                            <th>ID</th>
+                            <th>Type ID</th>
+                            <th>Name</th>
+                            <th>Detail</th>
+                            <th>Price</th>
+                            <th>Image</th>
+                        </tr>
+
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.type_id }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.detail }}</td>
+                            <td>${{ product.price }}</td>
+                            <td>{{ product.image }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+
+                    {% if product_type %}
+                    <div class="admin_table">
+
+                        <h1>{{view_type}}</h1>
+                        <table border="1" cellpadding="10">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+
+                            </tr>
+
+                            {% for type in product_type %}
+                            <tr>
+                                <td>{{ type.id }}</td>
+                                <td>{{ type.name }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% endif %}
+                    </div>
+    </section>
+
+
+
+
+
+
+
+
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+</body>
+
+
+
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="shortcut icon" href="{{url_for('static', filename='home.png')}}" type="image/x-icon">
+    {% if login or admin_login %}
+    <link rel="shortcut icon" href="{{url_for('static', filename='login.png')}}" type="image/x-icon">
+    <title>Login</title>
+    {% endif %}
+    {% if signup %}
+    <link rel="shortcut icon" href="{{url_for('static', filename='signup.png')}}" type="image/x-icon">
+    <title>Sign Up</title>
+    {% endif %}
+
+    </style>
+    <title>Home</title>
+</head>
+
+{% with messages=get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-container">
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+
+<body>
+
+    {% if login %}
+    <section class="userform">
+        <form action="{{url_for('login')}}" method="post">
+            <h1>Login</h1>
+            <div class="field">
+                <label for="email">Email</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+                <div class="showPassword" id="showPassword">Show</div>
+            </div>
+            <div class="field">
+                <button>Login</button>
+            </div>
+            <div class="field" id="">
+                <p>Don't have an account? <a href="{{url_for('signup')}}">Sign up</a> /
+                    Forgot your password. <a href="{{url_for('newPassword')}}">Recreate</a></p>
+            </div>
+            <div class="error">{{error}}</div>
+        </form>
+    </section>
+    {% endif %}
+
+
+    {% if admin_login %}
+    <section class="main">
+
+        <div class="userform">
+
+            <form action="/admin/login" method="post">
+                <h1>Verification</h1>
+                <div class="field">
+
+                    <input type="email" name="email" id="email" required placeholder="Type your email address here...">
+
+                </div>
+                <div class="field">
+                    <button>Verify</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if signup %}
+    <section class="userform">
+        <form action="/signup" method="post">
+            <h1>Create Account</h1>
+            <div class="span">
+                <div class="part">
+                    <div class="field">
+                        <label for="fname">First Name</label>
+                        <input type="text" name="fname" required>
+                    </div>
+                    <div class="field">
+                        <label for="lname">Last Name</label>
+                        <input type="text" name="lname" required>
+                    </div>
+                </div>
+                <div class="part">
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" required>
+                    </div>
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" required>
+                        <div class="showPassword" id="showPassword">Show</div>
+                    </div>
+                </div>
+            </div>
+            <div class="error_message">{{error_message}}</div>
+
+            <div class="field">
+                <button>Create</button>
+            </div>
+
+            <div class="field">
+                <p>Already have an account? <a href="{{url_for('login')}}">Login</a></p>
+            </div>
+        </form>
+
+    </section>
+    {% endif %}
+
+
+    <section class="header">
+        {% if logged_in %}
+        <div class="welcome">
+            {{headMessage}}
+        </div>
+
+        
+
+      
+        <div class="notification">
+            {% if unreadCount %}
+            <div class="callChat" id="callChat">
+                <a href="{{url_for('inbox')}}">
+                    <div class="bell">
+                        <img src="{{url_for('static', filename='bell.png')}}" alt="" srcset="">
+                    </div>
+                    <div class="count">
+                        {{unreadCount}}
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+            
+            {% if itemCount  %}
+            <div class="cartView" id="cartView">
+                <a href="{{url_for('view_items')}}">
+                    <div class="cart">
+                        <img src="{{url_for('static', filename='cart.png')}}" alt="" srcset="">
+                    </div>
+                    <div class="count">
+                        {{itemCount}}
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+            
+        </div>
+
+        
+        {% endif %}
+
+        <form action="{{url_for('search_product')}}" method="post">
+            <input type="search" name="product_name" id="" required placeholder="Search product...">
+            <button>Search</button>
+        </form>
+
+
+
+        <div class="nav">
+            <div class="profile">
+                {% if logged_in %}
+                <div class="circle" id="circle" style=" border: 1px solid white;">
+                    <p>{{user['fname'][0].upper()}}</p>
+                </div>
+                {% else%}
+                <div class="circle" id="circle">
+                    <img src="{{url_for('static', filename='menu.png')}}" alt="" srcset="">
+                </div>
+                {% endif %}
+            </div>
+            <div class="box" id="box">
+
+                {% if logged_in %}
+                <div class="boxHead">
+                    <div class="userName">
+                        {{user['fname']}} {{user['lname']}}
+                    </div>
+                    <div class="close" id="close_box">X</div>
+                </div>
+                <div class="boxLink">
+                    <div class="linkCategory">
+                        <ul>
+                            <li><a href="{{url_for('home')}}">Home</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="linkCategory">
+                        <ul>
+                            <li><a href="{{url_for('view_items')}}">Cart View</a></li>
+                            <li><a href="{{url_for('home')}}">Payments View </a></li>
+                        </ul>
+                    </div>
+
+                    <div class="linkCategory">
+                        <ul>
+                            <li><a href="{{url_for('inbox')}}">Support Chat</a></li>
+                            <li><a href="{{url_for('logout')}}">Logout</a></li>
+
+                        </ul>
+                    </div>
+
+                    <div class="linkCategory">
+                        <ul>
+                            <li id="delete_account"><a>Delete This Account</a></li>
+                        </ul>
+
+                    </div>
+                    <div class="linkCategory">
+                        <ul>
+
+                        </ul>
+                    </div>
+
+                </div>
+                {% else %}
+                <div class="boxHead">
+                    <div class="userName">
+                        Not Logged In
+                    </div>
+                    <div class="close" id="close_box">X</div>
+                </div>
+                <div class="boxLink">
+                    <div class="linkCategory">
+                        <ul>
+                            <li><a href="{{url_for('home')}}">Home</a></li>
+
+                    </div>
+                    <div class="linkCategory">
+                        <ul>
+                            <li><a href="{{url_for('home')}}">Home</a></li>
+                            <li><a href="{{url_for('login')}}">Login</a></li>
+                            <li><a href="{{url_for('signup')}}">Sign Up</a></li>
+                        </ul>
+                    </div>
+                    <div class="linkCategory">
+                        <ul>
+                        </ul>
+                    </div>
+                </div>
+                {%endif%}
+
+            </div>
+        </div>
+    </section>
+
+
+    {% if search %}
+    <section class="productsSection" id="home">
+
+        {% for product in search %}
+        <div class="productCard" id="product{{product['id']}}">
+            <h1>{{product['name']}}</h1>
+
+            <div class="productFlex">
+                <div class="productImg"><img src="{{url_for('static', filename='products/' ~ product['image'] )}}"
+                        alt="Product_pic.png" id="phone{{product['id']}}">
+                </div>
+
+                <div class="productDetail">
+                    <p>{{product['detail']}}</p>
+                    <span>Worth ${{product['price']}}</span>
+                    {% if logged_in %}
+                    <form action="{{url_for('view_product')}}" method="post">
+                        <input type="hidden" name="product_image" value="{{product['image']}}">
+                        <input type="hidden" name="product_name" value="{{product['name']}}">
+                        <input type="hidden" name="product_detail" value="{{product['detail']}}">
+                        <input type="hidden" name="product_price" value="{{product['price']}}">
+                        <button>View</button>
+                    </form>
+
+                    {% else %}
+                    <a href="/login">
+                        <button style="width: 60px; font-size: 8px;">Login to view</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% if logged_in %}
+            <div class="addCart">
+                <form action="{{url_for('add_to_cart')}}" method="post">
+                    <input type="hidden" name="product_name" value="{{product['name']}}">
+                    <input type="hidden" name="product_price" value="{{product['price']}}">
+                    <button>+</button>
+                </form>
+            </div>
+
+            {% endif %}
+        </div>
+
+        {% endfor %}
+    </section>
+    {% else %}
+    <section class="productsSection">
+        {{noResult}}
+    </section>
+    {% endif %}
+
+    {% if products %}
+    <section class="productsSection" id="home">
+
+        {% for product in products %}
+        <div class="productCard" id="product{{product['id']}}">
+
+            <h1>{{product['name']}}</h1>
+
+            <div class="productFlex">
+                <div class="productImg"><img src="{{url_for('static', filename='products/' ~ product['image'] )}}"
+                        alt="Product_pic.png" id="phone{{product['id']}}">
+                </div>
+
+                <div class="productDetail">
+                    <p>{{product['detail']}}</p>
+                    <span>Worth ${{product['price']}}</span>
+                    {% if logged_in %}
+                    <form action="{{url_for('view_product')}}" method="post">
+                        <input type="hidden" name="product_image" value="{{product['image']}}">
+                        <input type="hidden" name="product_name" value="{{product['name']}}">
+                        <input type="hidden" name="product_detail" value="{{product['detail']}}">
+                        <input type="hidden" name="product_price" value="{{product['price']}}">
+                        <button>View</button>
+                    </form>
+
+                    {% else %}
+                    <a href="/login">
+                        <button style="width: 60px; font-size: 8px;">Login to view</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% if logged_in %}
+            <div class="addCart">
+                <form action="{{url_for('add_to_cart')}}" method="post">
+                    <input type="hidden" name="product_name" value="{{product['name']}}">
+                    <input type="hidden" name="product_price" value="{{product['price']}}">
+                    <button>+</button>
+                </form>
+            </div>
+
+            {% endif %}
+        </div>
+        {% endfor %}
+
+    </section>
+    {% endif %}
+
+    {% if view_product %}
+    <section class="view_section">
+
+        <div class="product">
+            <div class="image">
+                <img src="{{url_for('static', filename='products/' ~ product['image'])}}" alt=" {{product['image']}} ">
+            </div>
+            <div class="detail">
+                {{product['detail']}}
+            </div>
+            <div class="price">
+                Price${{product['price']}}
+            </div>
+            <form action="{{url_for('add_to_cart')}}" method="post">
+                <input type="hidden" name="product_name" value="{{product['name']}}">
+                <input type="hidden" name="product_price" value="{{product['price']}}">
+                <button>Add to cart</button>
+            </form>
+        </div>
+        <div class="full_image">
+            <img src="{{url_for('static', filename='products/' ~ product['image'])}}" alt=" {{product['image']}} ">
+        </div>
+    </section>
+    {% endif %}
+
+    {% if view_items %}
+    <section class="view_items">
+        <div class="itemBox">
+            <div class="itemDetail">
+                <p>Items for {{user['fname']}} {{user['lname']}}</p>
+
+            </div>
+        </div>
+        {% for item in view_items %}
+        <div class="itemBox">
+            <div class="index">Item {{loop.index}}</div>
+            <div class="itemDetail">
+                <p>Item Name: {{item['item_name']}}</p>
+                <p>Price: ${{item['item_price']}}</p>
+            </div>
+
+            <form action="{{url_for('remove_from_cart')}}" method="post">
+                <input type="hidden" name="itemId" value="{{item['id']}}">
+                <input type="hidden" name="itemName" value="{{item['item_name']}}">
+                <input type="hidden" name="itemPrice" value="{{item['item_price']}}">
+                <button>Remove From Cart</button>
+            </form>
+        </div>
+        {% endfor %}
+
+        <div class="totalPrice">
+            Total Price: ${{totalPrice}}
+            <form action="" method="post">
+                <button>Pay</button>
+            </form>
+        </div>
+
+    </section>
+    {% else %}
+    <section class="view_items">{{emptyCart}}</section>
+    {% endif %}
+
+
+
+    <section class="warning" id="warning">
+        <div class="content">
+            <p>Are you sure you want to delete your account?</p>
+        </div>
+
+        <div class="link"><a href="{{url_for('delete_user_account')}}" id="delete_yes">Yes</a> <a id="delete_no">No</a>
+        </div>
+
+    </section>
+
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

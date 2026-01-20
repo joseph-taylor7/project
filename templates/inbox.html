@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+    <link rel="shortcut icon" href="{{url_for('static', filename='inbox.png')}}" type="image/x-icon">
+    <title>Message Inbox</title>
+</head>
+<body>
+    {% with messages=get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash_container" style="position: absolute;z-index: 5;">
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{message}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    
+
+
+    {% if logged_in and unreads %}
+    <section class="chatBox" id="chatBox">
+        <div class="chaTitle">
+            {% if unreadCount > 1 %}
+            <h1>My Messages ({{unreadCount}}) </h1>
+            {% else %}
+            <h1>My Message ({{unreadCount}}) </h1>
+            {% endif %}
+
+            <div class="sendNew"><a href="{{url_for('new_message')}}">Send New</a></div>
+            <div class="backHome"><a href="{{url_for('home')}}"><button>Back Home</button></a></div>
+            {% if unreadCount > 1 %}
+            <div class="markAll" ><a href="{{url_for('readAll')}}"><button>Mark all as read</button></a></div>
+            {% endif %}
+        </div>
+        <div class="messageBox">
+    
+            {% for unread in unreads %}
+            
+            <div class="unread">
+                <div class="sender">
+                    
+                    
+                    <li id="letter"> {{loop.index}}</li>
+                    
+                    <li>{{unread['sender_email']}}</li>
+                    
+                    <form action="{{url_for('read')}}" method="post">
+                        <div class="field">
+                            <input type="hidden" name="sender_email" value="{{unread.sender_email}}">
+                            <input type="hidden" name="message_to_read" value="{{unread.content}}">
+                            <button>Mark as read</button>
+                        </div>
+                    </form>
+                        
+                           
+                    
+                </div>
+   
+                <div class="detail">
+                    <div class="receivedMessage">{{unread.content}} </div>
+                    <div class="sentAt">{{unread.sent_at}} </div>
+                </div>
+                <div class="formReply">
+                    <form action="{{url_for('reply')}}" method="post">
+
+                        <input type="hidden" name="receiver_email" value="{{unread.sender_email}}">
+                        <input type="hidden" name="message_to_reply" value="{{unread.content}}">
+                        <textarea name="content" id="content" placeholder="Type your reply here..." cols="50" required></textarea>
+                        <button>Reply</button>
+                    </form>
+                
+                </div>
+            </div>
+            {% endfor %}
+        </div> 
+    </section>
+
+    {% else %}
+
+    <section class="chatBox">
+        {% if logged_in %}
+        <section class="chatBox">
+            No New Messages!
+            <a href="{{url_for('new_message')}}" style="color: rgb(12, 248, 63); margin-left: 1rem;">Start Chat</a><a href="{{url_for('home')}}" style="color: rgb(12, 248, 63); margin-left: 1rem;">Back Home</a>
+        </section>
+        {% endif %}
+    {% endif %}
+
+    
+{% if leaveMessage %}
+<div class="formMessage">
+    <form action="{{url_for('send_message')}}" method="post">
+        <div class="field">
+           <input type="hidden" name="receiver_email"
+                    id="" value="send@support"><br>
+
+            <textarea name="content" id="content" placeholder="Type your message here..." required></textarea>
+            <button>Send</button>
+        </div>
+
+    </form>
+</div>
+{% endif %}
+   
+
+    <script src="{{ url_for('static', filename='script.js')}}"></script>
+</body>
+</html>
