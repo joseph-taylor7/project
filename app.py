@@ -61,7 +61,7 @@ def init_db():
         user_id integer,
         item_name text not null,
         item_price real not null,
-        added_date timestamp defaul current_timestamp,
+        added_date timestamp default current_timestamp,
         added_at timestamp default current_timestamp,
         foreign key(user_id) references users(id)
 
