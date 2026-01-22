@@ -172,9 +172,13 @@ def search_product():
 
             noResult=f"No Result for {user_input}"
             return render_template("home.html",logged_in=True, user=user, is_user=True, unreadCount=unreadCount, search=search, noResult=noResult)
-        
+
+        if search and not "user_id" in session:
+
+            return render_template("home.html", search=search)
+
         noResult=f"No Result for {user_input}"
-        return render_template("home.html", noResult=noResult)
+        return render_template("home.html", noResult=noResult, search=search)
     return render_template("home.html")
 
 
