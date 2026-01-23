@@ -37,16 +37,14 @@
         </div>
         <div class="messageBox">
     
-            {% for unread in unreads %}
-            
+            {% for unread in unreads %} 
             <div class="unread">
                 <div class="sender">
                     
                     
                     <li id="letter"> {{loop.index}}</li>
                     
-                    <li>{{unread['sender_email']}}</li>
-                    
+                    <li>{{unread['sender_email']}}</li> 
                     <form action="{{url_for('read')}}" method="post">
                         <div class="field">
                             <input type="hidden" name="sender_email" value="{{unread.sender_email}}">
@@ -62,6 +60,10 @@
                 <div class="detail">
                     <div class="receivedMessage">{{unread.content}} </div>
                     <div class="sentAt">{{unread.sent_at}} </div>
+                    
+                    
+
+
                 </div>
                 <div class="formReply">
                     <form action="{{url_for('reply')}}" method="post">

@@ -530,6 +530,7 @@ button:hover, a:hover{
 .productsSection .productCard{
     background-color: #2222;
     border-radius: 10px;
+    position: relative;
 }
 
 .productsSection .productCard h1 {
@@ -581,14 +582,14 @@ button:hover, a:hover{
 }
 
 .productsSection .addCart form button{
-    position: absolute;
+   position: absolute;
     width: 10px;
     height: 10px;
     border-radius: 50%;
     background-color: green;
     font-size: 8px;
-    top: 1rem;
-    right: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
     text-align: center;
     display: flex;
     margin:0 auto;
@@ -840,7 +841,7 @@ button:hover, a:hover{
     width: 400px;
     border-radius: 10px;
     animation: boxIn 1s ease-in;
-    z-index: 8;
+    z-index: 1;
     
 
 
