@@ -384,7 +384,7 @@ def login():
         conn.commit()
 
         if user is None:
-            flash("Account not found", "error")
+            flash("User not found", "error")
             return redirect(url_for("login"))
 
         stored_hash = user["password"]
