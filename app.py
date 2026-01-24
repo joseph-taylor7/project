@@ -945,7 +945,7 @@ def send_message():
         
 
             if not session.get("user_email"):
-                flash("You are currently not loggen. Login first in", "error")
+                flash("You are currently not logged in.  First  Login ", "error")
                 return redirect(url_for("login"))
 
             if not is_email_exist:
